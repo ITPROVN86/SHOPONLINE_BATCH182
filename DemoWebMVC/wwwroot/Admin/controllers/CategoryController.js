@@ -35,6 +35,12 @@
             //}
         });
 
+ 
+        $(function () {
+            $('#alertBox').removeClass('hide');
+            $('#alertBox').delay(3000).slideUp(500);
+        })
+
         $('.btn-active').off('click').on('click', function (e) {
             e.preventDefault();
             var btn = $(this);
@@ -45,8 +51,8 @@
                 datatype: "json",
                 type: "POST",
                 success: function (response) {
-                    console.log(response);
                     if (response.status == true) {
+                        console.log(`Status is true`);
                         btn.text('Bật');
                         btn.removeClass("btn-danger");
                         btn.addClass('btn-primary');
@@ -54,15 +60,10 @@
                     else {
                         btn.text('Tắt');
                         btn.removeClass('btn-primary').addClass('btn-danger');
-
                     }
                 }
             });
         });
-        $(function () {
-            $('#alertBox').removeClass('hide');
-            $('#alertBox').delay(3000).slideUp(500);
-        })
     }
 }
 common.init();

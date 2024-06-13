@@ -106,9 +106,9 @@ namespace DemoWebMVC.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult ChangeStatus(int id)
+        public async Task<JsonResult> ChangeStatus(int id)
         {
-            var result = _categoryRepository.ChangeStatus(id);
+            var result = await _categoryRepository.ChangeStatus(id);
             return Json(new
             {
                 status = result
