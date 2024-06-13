@@ -10,6 +10,7 @@ namespace ShopDataAccess
 {
     public class CategoryDAO : SingletonBase<CategoryDAO>
     {
+        private ShopBacth182Context _context;
         public CategoryDAO() { _context = new ShopBacth182Context(); }
         /// <summary>
         /// GET ALL
@@ -17,6 +18,7 @@ namespace ShopDataAccess
         /// <returns></returns>
         public async Task<IEnumerable<Category>> GetCategoryAll()
         {
+            _context = new ShopBacth182Context();
             return await _context.Categories.ToListAsync();
         }
 
@@ -27,15 +29,16 @@ namespace ShopDataAccess
         /// <returns></returns>
         public async Task<Category> GetCategoryById(int id)
         {
-            var category = await _context.Categories.AsNoTrackingWithIdentityResolution().FirstOrDefaultAsync(c => c.CategoryId == id);
+            var category = await _context.Categories.FindAsync(id);
             if (category == null) return null;
 
             return category;
         }
         public async Task Add(Category category)
         {
+            _context = new ShopBacth182Context();
             _context.Categories.Add(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         public async Task Update(Category category)
         {
@@ -52,16 +55,16 @@ namespace ShopDataAccess
                 _context.Categories.Add(category);
             }
             _context.Categories.Update(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         public async Task Delete(int id)
         {
-            _context = new ShopBacth182Context();
+            //_context = new ShopBacth182Context();
             var category = await GetCategoryById(id);
             if (category != null)
             {
                 _context.Categories.Remove(category);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -74,7 +77,7 @@ namespace ShopDataAccess
         {
             var category = await GetCategoryById(id);
             category.Status = !category.Status;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return category.Status;
         }
     }

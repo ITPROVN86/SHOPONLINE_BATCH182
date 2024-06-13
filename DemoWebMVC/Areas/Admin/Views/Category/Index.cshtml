@@ -37,8 +37,8 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.CategoryName)
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Status)
+                        <td class="text-center">
+                            <a href="#" class="btn @(item.Status ? "btn-primary":"btn-danger") btn-active" data-id="@item.CategoryId">@(item.Status ? "Bật" : "Tắt")</a>
                         </td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-outline-danger">Chỉnh sửa</a>
@@ -53,25 +53,30 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel">Xác nhận xóa</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title" id="exampleModalLabel1">Xác nhận xóa</h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p id="confirmMessage">Bạn có đồng ý thực hiện việc xoá không?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Hủy
+                </button>
                 <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
             </div>
         </div>
     </div>
 </div>
+             
+
 
 @section Scripts {
     @{

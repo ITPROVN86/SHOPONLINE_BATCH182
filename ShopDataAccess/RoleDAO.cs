@@ -10,6 +10,7 @@ namespace ShopDataAccess
 {
     public class RoleDAO : SingletonBase<RoleDAO>
     {
+        private ShopBacth182Context _context;
         /// <summary>
         /// GET ALL
         /// </summary>

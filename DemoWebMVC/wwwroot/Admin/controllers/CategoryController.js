@@ -34,6 +34,31 @@
             });
             //}
         });
+
+        $('.btn-active').off('click').on('click', function (e) {
+            e.preventDefault();
+            var btn = $(this);
+            var id = btn.data('id');
+            $.ajax({
+                url: "/Admin/Category/ChangeStatus",
+                data: { id: id },
+                datatype: "json",
+                type: "POST",
+                success: function (response) {
+                    console.log(response);
+                    if (response.status == true) {
+                        btn.text('Bật');
+                        btn.removeClass("btn-danger");
+                        btn.addClass('btn-primary');
+                    }
+                    else {
+                        btn.text('Tắt');
+                        btn.removeClass('btn-primary').addClass('btn-danger');
+
+                    }
+                }
+            });
+        });
         $(function () {
             $('#alertBox').removeClass('hide');
             $('#alertBox').delay(3000).slideUp(500);

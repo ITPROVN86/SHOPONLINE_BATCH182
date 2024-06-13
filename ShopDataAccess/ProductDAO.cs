@@ -10,6 +10,7 @@ namespace ShopDataAccess
 {
     public class ProductDAO : SingletonBase<ProductDAO>
     {
+        private ShopBacth182Context _context;
         /// <summary>
         /// GET ALL
         /// </summary>

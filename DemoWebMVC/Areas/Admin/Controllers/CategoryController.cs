@@ -44,6 +44,7 @@ namespace DemoWebMVC.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 _categoryRepository.Add(category);
+                SetAlert(ShopCommon.Contants.UPDATE_SUCCESS, ShopCommon.Contants.SUCCESS);
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -102,6 +103,16 @@ namespace DemoWebMVC.Areas.Admin.Controllers
             {
                 return Json(new { success = false, message = ex.Message });
             }
+        }
+
+        [HttpPost]
+        public JsonResult ChangeStatus(int id)
+        {
+            var result = _categoryRepository.ChangeStatus(id);
+            return Json(new
+            {
+                status = result
+            });
         }
 
     }
