@@ -42,7 +42,7 @@ namespace ShopDataAccess
         }
         public async Task Update(Category category)
         {
-            _context = new ShopBacth182Context();
+            //_context = new ShopBacth182Context();
             var existingItem = await GetCategoryById(category.CategoryId);
             if (existingItem != null)
             {
@@ -54,7 +54,7 @@ namespace ShopDataAccess
                 // Thêm thực thể mới nếu nó chưa tồn tại
                 _context.Categories.Add(category);
             }
-            _context.Categories.Update(category);
+            _context.Categories.Update(existingItem);
             await _context.SaveChangesAsync();
         }
         public async Task Delete(int id)

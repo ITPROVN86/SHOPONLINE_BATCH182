@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ShopBusiness.Models;
 using ShopRepository;
+using X.PagedList;
 
 namespace DemoWebMVC.Areas.Admin.Controllers
 {
@@ -21,14 +22,15 @@ namespace DemoWebMVC.Areas.Admin.Controllers
         }
 
         // GET: Admin/Category
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? page)
         {
             var category = await _categoryRepository.GetAllCategory();
             if (!string.IsNullOrEmpty(searchString))
             {
                 category = category.Where(c => ShopCommon.Library.ConvertToUnSign(c.CategoryName.ToLower()).Contains(ShopCommon.Library.ConvertToUnSign(searchString.ToLower())));
             }
-            return View(category);
+            ViewBag.Page = 5;
+            return View(category.ToPagedList(page ?? 1, (int)ViewBag.Page));
         }
 
         // GET: Admin/Category/Create
