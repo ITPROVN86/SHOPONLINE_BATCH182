@@ -18,6 +18,18 @@
                 </p>
             }
         }
+        @using (Html.BeginForm("Index", "Category", FormMethod.Get, new { id = "form-search" }))
+        {
+            <div class="row mb-3">
+                <div class="col-sm-6 col-form-label">
+                @Html.TextBox("SearchString", TempData["searchString"], null, new { @class = "form-control", @placeholder = "Nhập từ khoá cần tìm kiếm" })
+                </div>
+                <div class="col-sm-6">
+                    <button class="btn btn-danger"><i class="fa fa-search"></i> Tìm kiếm</button>
+                </div>
+            </div>
+
+        }
         <table class="table">
             <thead>
                 <tr>

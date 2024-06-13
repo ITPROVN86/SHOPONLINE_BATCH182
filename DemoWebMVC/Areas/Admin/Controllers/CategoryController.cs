@@ -21,10 +21,13 @@ namespace DemoWebMVC.Areas.Admin.Controllers
         }
 
         // GET: Admin/Category
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             var category = await _categoryRepository.GetAllCategory();
-
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                category = category.Where(c => ShopCommon.Library.ConvertToUnSign(c.CategoryName.ToLower()).Contains(ShopCommon.Library.ConvertToUnSign(searchString.ToLower())));
+            }
             return View(category);
         }
 
