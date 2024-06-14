@@ -10,7 +10,7 @@ namespace ShopDataAccess
 {
     public class CategoryDAO : SingletonBase<CategoryDAO>
     {
-        private ShopBacth182Context _context;
+        private readonly ShopBacth182Context _context;
         public CategoryDAO() { _context = new ShopBacth182Context(); }
         /// <summary>
         /// GET ALL
@@ -18,7 +18,7 @@ namespace ShopDataAccess
         /// <returns></returns>
         public async Task<IEnumerable<Category>> GetCategoryAll()
         {
-            _context = new ShopBacth182Context();
+            //_context = new ShopBacth182Context();
             return await _context.Categories.ToListAsync();
         }
 
@@ -36,7 +36,7 @@ namespace ShopDataAccess
         }
         public async Task Add(Category category)
         {
-            _context = new ShopBacth182Context();
+            //_context = new ShopBacth182Context();
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
         }
@@ -48,14 +48,15 @@ namespace ShopDataAccess
             {
                 // Cập nhật các thuộc tính cần thiết
                 _context.Entry(existingItem).CurrentValues.SetValues(category);
+                await _context.SaveChangesAsync();
             }
             else
             {
                 // Thêm thực thể mới nếu nó chưa tồn tại
                 _context.Categories.Add(category);
             }
-            _context.Categories.Update(existingItem);
-            await _context.SaveChangesAsync();
+            //_context.Categories.Update(existingItem);
+           
         }
         public async Task Delete(int id)
         {
@@ -76,9 +77,13 @@ namespace ShopDataAccess
         public async Task<bool> ChangeStatus(int id)
         {
             var category = await GetCategoryById(id);
-            category.Status = !category.Status;
-            await _context.SaveChangesAsync();
-            return category.Status;
+            if (category != null)
+            {
+                category.Status = !category.Status;
+                await _context.SaveChangesAsync();
+                return category.Status;
+            }
+            return false;
         }
     }
 }

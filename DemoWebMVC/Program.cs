@@ -1,4 +1,5 @@
 using ShopBusiness.Models;
+using ShopDataAccess;
 
 namespace DemoWebMVC
 {
@@ -8,6 +9,7 @@ namespace DemoWebMVC
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddScoped(typeof(ShopBacth182Context));
+            builder.Services.AddScoped<CategoryDAO>();
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
