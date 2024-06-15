@@ -12,19 +12,19 @@ namespace DemoWebMVC.Areas.Admin.Controllers
         public LoginController() {
             userRepository = new UserRepository();
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult Index(UserLogin userLogin)
+        public async Task<IActionResult> Index(UserLogin userLogin)
         {
             if (ModelState.IsValid)
             {
                 var userName = userLogin.UserName;
                 var password = ShopCommon.Library.EncryptMD5(userLogin.Password);
-                var user = userRepository.GetUserByUserNamePassword(userName, password);
+                var user = await userRepository.GetUserByUserNamePassword(userName, password);
                 if (user!=null)
                 {
                     return RedirectToAction("Index","Home");
