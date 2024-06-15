@@ -45,8 +45,7 @@ namespace ShopDataAccess
                 _context.Entry(existingItem).CurrentValues.SetValues(category);
                 await _context.SaveChangesAsync();
             }
-            //_context.Categories.Update(existingItem);
-           
+
         }
         public async Task Delete(int id)
         {
