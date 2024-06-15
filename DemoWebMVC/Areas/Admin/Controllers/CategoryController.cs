@@ -48,7 +48,7 @@ namespace DemoWebMVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                _categoryRepository.Add(category);
+                await _categoryRepository.Add(category);
                 SetAlert(ShopCommon.Contants.UPDATE_SUCCESS, ShopCommon.Contants.SUCCESS);
                 return RedirectToAction(nameof(Index));
             }

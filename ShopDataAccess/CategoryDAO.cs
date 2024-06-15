@@ -10,15 +10,12 @@ namespace ShopDataAccess
 {
     public class CategoryDAO : SingletonBase<CategoryDAO>
     {
-        private readonly ShopBacth182Context _context;
-        public CategoryDAO() { _context = new ShopBacth182Context(); }
         /// <summary>
         /// GET ALL
         /// </summary>
         /// <returns></returns>
         public async Task<IEnumerable<Category>> GetCategoryAll()
         {
-            //_context = new ShopBacth182Context();
             return await _context.Categories.ToListAsync();
         }
 
@@ -36,13 +33,11 @@ namespace ShopDataAccess
         }
         public async Task Add(Category category)
         {
-            //_context = new ShopBacth182Context();
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
         }
         public async Task Update(Category category)
         {
-            //_context = new ShopBacth182Context();
             var existingItem = await GetCategoryById(category.CategoryId);
             if (existingItem != null)
             {
@@ -50,17 +45,11 @@ namespace ShopDataAccess
                 _context.Entry(existingItem).CurrentValues.SetValues(category);
                 await _context.SaveChangesAsync();
             }
-            else
-            {
-                // Thêm thực thể mới nếu nó chưa tồn tại
-                _context.Categories.Add(category);
-            }
             //_context.Categories.Update(existingItem);
            
         }
         public async Task Delete(int id)
         {
-            //_context = new ShopBacth182Context();
             var category = await GetCategoryById(id);
             if (category != null)
             {

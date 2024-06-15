@@ -11,7 +11,7 @@ namespace ShopDataAccess
     {
         private static T _instance;
         private static readonly object _lock = new object();
-        /*public ShopBacth182Context _context = new ShopBacth182Context();*/
+        public ShopBacth182Context _context = new ShopBacth182Context();
 
         public static T Instance
         {
