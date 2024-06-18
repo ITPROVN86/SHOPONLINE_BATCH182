@@ -10,14 +10,13 @@ namespace ShopDataAccess
 {
     public class ProductDAO : SingletonBase<ProductDAO>
     {
-        private ShopBacth182Context _context;
         /// <summary>
         /// GET ALL
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Product> GetProductAll()
+        public async Task<IEnumerable<Product>> GetProductAll()
         {
-            return _context.Products.AsNoTrackingWithIdentityResolution().ToList();
+            return await _context.Products.ToListAsync();
         }
 
         /// <summary>
@@ -25,50 +24,43 @@ namespace ShopDataAccess
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Product GetProductById(int id)
+        public async Task<Product> GetProductById(int id)
         {
-            var product = _context.Products.AsNoTrackingWithIdentityResolution().FirstOrDefault(c => c.ProductId == id);
+            var product = await _context.Products.FirstOrDefaultAsync(c => c.ProductId == id);
             if (product == null) return null;
 
             return product;
         }
-        public void Add(Product product)
+        public async Task Add(Product product)
         {
             _context.Products.Add(product);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public void Update(Product product)
+        public async Task Update(Product product)
         {
-            _context = new ShopBacth182Context();
-            var existingItem = GetProductById(product.CategoryId);
+            var existingItem = await GetProductById(product.CategoryId);
             if (existingItem != null)
             {
                 // Cập nhật các thuộc tính cần thiết
-                _context.Entry(existingItem).CurrentValues.SetValues(product);
+                _context.Entry(existingItem).CurrentValues.SetValues(product); 
+                await _context.SaveChangesAsync();
             }
-            else
-            {
-                // Thêm thực thể mới nếu nó chưa tồn tại
-                _context.Products.Add(product);
-            }
-            _context.Products.Update(product);
-            _context.SaveChanges();
         }
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var product = GetProductById(id);
+            var product = await GetProductById(id);
             if (product != null)
             {
                 _context.Products.Remove(product);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public bool ChangeStatus(int id)
+        public async Task<bool> ChangeStatus(int id)
         {
-            var product = GetProductById(id);
+            var product = await GetProductById(id);
             product.Status = !product.Status;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return product.Status;
         }
     }
