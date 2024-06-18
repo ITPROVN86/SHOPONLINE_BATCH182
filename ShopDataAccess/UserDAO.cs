@@ -16,7 +16,7 @@ namespace ShopDataAccess
         /// <returns></returns>
         public async Task<IEnumerable<User>> GetUserAll()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Include(r=>r.Role).ToListAsync();
         }
 
         /// <summary>

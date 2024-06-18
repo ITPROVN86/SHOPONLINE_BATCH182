@@ -28,7 +28,10 @@
                 <div class="col-sm-6 col-form-label">
                     @Html.TextBox("SearchString", TempData["searchString"], null, new { @class = "form-control", @placeholder = "Nhập từ khoá cần tìm kiếm" })
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-3" style="margin: auto">
+                    @Html.DropDownList("roleId", (IEnumerable<SelectListItem>)ViewBag.RoleId, "All Roles", new { @class = "form-control", @id = "cboSearchRoleId" })
+                </div>
+                <div class="col-sm-3">
                     <button class="btn btn-danger"><i class="fa fa-search"></i> Tìm kiếm</button>
                 </div>
             </div>
@@ -37,12 +40,9 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th align="center">#</th>
                     <th>
                         @Html.DisplayNameFor(model => model.UserName)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Password)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.FullName)
@@ -76,9 +76,6 @@
                             @Html.DisplayFor(modelItem => item.UserName)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Password)
-                        </td>
-                        <td>
                             @Html.DisplayFor(modelItem => item.FullName)
                         </td>
                         <td>
@@ -88,7 +85,7 @@
                             <a href="#" class="btn @(item.Status ? "btn-primary":"btn-danger") btn-active" data-id="@item.UserId">@(item.Status ? "Bật" : "Tắt")</a>
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Role.RoleId)
+                            @Html.DisplayFor(modelItem => item.Role.RoleName)
                         </td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-outline-danger">Chỉnh sửa</a>
@@ -108,6 +105,30 @@
                 OnSuccess = "onAjaxSuccess",
                 OnFailure = "onAjaxFailure"
             }))
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel1">Xác nhận xóa</h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Bạn có đồng ý thực hiện việc xoá không?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Hủy
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
+            </div>
         </div>
     </div>
 </div>

@@ -31,6 +31,7 @@ namespace DemoWebMVC.Areas.Admin.Controllers
             {
                 user = user.Where(c => ShopCommon.Library.ConvertToUnSign(c.FullName.ToLower()).Contains(ShopCommon.Library.ConvertToUnSign(searchString.ToLower())));
             }
+            ViewData["RoleId"] = new SelectList(await roleRepository.GetAllRole(), "RoleId", "RoleName");
             ViewBag.Page = 5;
             return View(user.ToPagedList(page ?? 1, (int)ViewBag.Page));
         }
@@ -47,15 +48,23 @@ namespace DemoWebMVC.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,RoleId,UserName,Password,FullName,Email,Status")] User user)
+        public async Task<IActionResult> Create([Bind("UserId,RoleId,UserName, Password, FullName,Email,Status")] User user)
         {
+            ViewData["RoleId"] = new SelectList(await roleRepository.GetAllRole(), "RoleId", "RoleName", user.RoleId);
+
             if (ModelState.IsValid)
             {
+                if (string.IsNullOrEmpty(user.Password))
+                {
+                    SetAlert(ShopCommon.Contants.PASSWORD_FAIL, ShopCommon.Contants.FAIL);
+                    return View(user);
+                }
+                user.Password = ShopCommon.Library.EncryptMD5(user.Password);
                 await userRepository.Add(user);
                 SetAlert(ShopCommon.Contants.UPDATE_SUCCESS, ShopCommon.Contants.SUCCESS);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(await roleRepository.GetAllRole(), "RoleId", "RoleName", user.RoleId);
+
             return View(user);
         }
 
@@ -80,6 +89,15 @@ namespace DemoWebMVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (string.IsNullOrEmpty(user.Password))
+                {
+                    var currentPassword = await userRepository.GetUserById(user.UserId);
+                    user.Password = currentPassword.Password;
+                }
+                else
+                {
+                    user.Password = ShopCommon.Library.EncryptMD5(user.Password);
+                }
                 await userRepository.Update(user);
                 SetAlert(ShopCommon.Contants.UPDATE_SUCCESS, ShopCommon.Contants.SUCCESS);
                 return RedirectToAction(nameof(Index));
