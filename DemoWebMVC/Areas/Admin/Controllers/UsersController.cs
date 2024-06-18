@@ -24,12 +24,16 @@ namespace DemoWebMVC.Areas.Admin.Controllers
         }
 
         // GET: Admin/Users
-        public async Task<IActionResult> Index(string searchString, int? page)
+        public async Task<IActionResult> Index(string searchString, int? page, int roleId)
         {
             var user = await userRepository.GetAllUser();
             if (!string.IsNullOrEmpty(searchString))
             {
                 user = user.Where(c => ShopCommon.Library.ConvertToUnSign(c.FullName.ToLower()).Contains(ShopCommon.Library.ConvertToUnSign(searchString.ToLower())));
+            }
+            if (roleId != 0)
+            {
+                user = user.Where(u => u.RoleId == roleId);
             }
             ViewData["RoleId"] = new SelectList(await roleRepository.GetAllRole(), "RoleId", "RoleName");
             ViewBag.Page = 5;
