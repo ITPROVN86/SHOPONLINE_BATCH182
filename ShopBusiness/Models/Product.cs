@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopBusiness.Models;
 
@@ -32,6 +35,10 @@ public partial class Product
 
     [Display(Name = "Danh mục Sản phẩm")]
     public virtual Category? Category { get; set; } = null!;
+
+    [NotMapped]
+    [DisplayName("Upload File")]
+    public IFormFile ImageFile { get; set; }
 
     [Display(Name = "Người đăng")]
     public virtual User? UserPostNavigation { get; set; } = null!;

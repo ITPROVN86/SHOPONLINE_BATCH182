@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,12 +19,14 @@ namespace DemoWebMVC.Areas.Admin.Controllers
         private readonly IProductRepository productRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IUserRepository userRepository;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
-        public ProductsController()
+        public ProductsController(IWebHostEnvironment webHostEnvironment)
         {
             productRepository = new ProductRepository();
             categoryRepository = new CategoryRepository();
             userRepository = new UserRepository();
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Admin/Products
@@ -63,6 +66,8 @@ namespace DemoWebMVC.Areas.Admin.Controllers
             ViewData["UserPost"] = new SelectList(await userRepository.GetAllUser(), "UserId", "FullName");
             if (ModelState.IsValid)
             {
+                string uniqueFileName = UploadedFile(product);
+                product.ImageUrl = uniqueFileName;
                 await productRepository.Add(product);
                 SetAlert(ShopCommon.Contants.UPDATE_SUCCESS, ShopCommon.Contants.SUCCESS);
                 return RedirectToAction(nameof(Index));
@@ -133,6 +138,24 @@ namespace DemoWebMVC.Areas.Admin.Controllers
             {
                 status = result
             });
+        }
+
+        private string UploadedFile(Product product)
+        {
+            //string uniqueFileName = UploadedFile(hh);
+            //Save image to wwwroot/image
+            string wwwRootPath = webHostEnvironment.WebRootPath;
+            var exe = product.ImageFile.FileName;
+            string fileName = Path.GetFileNameWithoutExtension(exe);
+            string extension = Path.GetExtension(product.ImageFile.FileName);
+            product.ImageUrl = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+            string path = Path.Combine(wwwRootPath + "/Upload/Images/", fileName);
+            using (var fileStream = new FileStream(path, FileMode.Create))
+            {
+                product.ImageFile.CopyTo(fileStream);
+            }
+            ViewBag.Anh = product.ImageUrl;
+            return fileName;
         }
 
     }
