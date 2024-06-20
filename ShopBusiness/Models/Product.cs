@@ -15,10 +15,11 @@ public partial class Product
     public string? Description { get; set; }
     [Display(Name = "Nội dung")]
     public string? Ncontent { get; set; }
+    [Display(Name = "Danh mục Sản phẩm")]
     public int CategoryId { get; set; }
     [Display(Name = "Ảnh")]
     public string? ImageUrl { get; set; }
-    [Display(Name = "GIá cả")]
+    [Display(Name = "Giá cả")]
     public decimal Price { get; set; }
 
     [Display(Name = "Ngày đăng")]
@@ -30,8 +31,8 @@ public partial class Product
     public bool Status { get; set; }
 
     [Display(Name = "Danh mục Sản phẩm")]
-    public virtual Category Category { get; set; } = null!;
+    public virtual Category? Category { get; set; } = null!;
 
     [Display(Name = "Người đăng")]
-    public virtual User UserPostNavigation { get; set; } = null!;
+    public virtual User? UserPostNavigation { get; set; } = null!;
 }
