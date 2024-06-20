@@ -17,8 +17,7 @@
                 </p>
             }
         }
-        @using (Html.BeginForm("Create", "Products", FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
+          <form enctype="multipart/form-data" asp-action="Create">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="mb-3">
@@ -41,12 +40,11 @@
                 <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
             </div>
             <div class="mb-3">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" class="form-control" type="file" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
                 <img id="preview" src="@Url.Content(ViewBag.Anh==null?"~/Admin/img/avatars/1.png":"~/Upload/images/"+ViewBag.Anh)" class="rounded-circle" height="40" width="40" />
-
-                @Html.EditorFor(model => model.ImageFile, new { htmlAttributes = new { @class = "custom-file-input" } })
+              @*   @Html.EditorFor(model => model.ImageFile, new { htmlAttributes = new { @class = "custom-file-input" } }) *@
             </div>
             <div class="mb-3">
                 <label asp-for="Price" class="control-label"></label>
@@ -71,7 +69,7 @@
                 <a asp-action="Index" class="btn btn-primary">Trở về</a>
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
-        }
+        </form>
     </div>
 </div>
 
@@ -80,12 +78,12 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script>
+    <script type="text/javascript">
         $(function () {
             $('#alertBox').removeClass('hide');
             $('#alertBox').delay(3000).slideUp(500);
         })
-        ImageFile.onchange = evt => {
+       ImageFile.onchange = evt => {
             const [file] = ImageFile.files
             if (file) {
                 preview.src = URL.createObjectURL(file);

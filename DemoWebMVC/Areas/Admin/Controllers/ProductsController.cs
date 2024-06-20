@@ -11,6 +11,7 @@ using ShopBusiness.Models;
 using ShopRepository;
 using X.PagedList;
 
+
 namespace DemoWebMVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -59,7 +60,7 @@ namespace DemoWebMVC.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,ProductName,Description,Ncontent,CategoryId,ImageUrl,Price,CreatePost,UserPost,Status")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,ProductName,Description,Ncontent,CategoryId,ImageUrl, ImageFile, Price,CreatePost,UserPost,Status")] Product product)
         {
 
             ViewData["CategoryId"] = new SelectList(await categoryRepository.GetAllCategory(), "CategoryId", "CategoryName");
@@ -140,11 +141,11 @@ namespace DemoWebMVC.Areas.Admin.Controllers
             });
         }
 
-        private string UploadedFile(Product product)
+        public string UploadedFile(Product product)
         {
             //string uniqueFileName = UploadedFile(hh);
             //Save image to wwwroot/image
-            string wwwRootPath = webHostEnvironment.WebRootPath;
+            string wwwRootPath = this.webHostEnvironment.WebRootPath;
             var exe = product.ImageFile.FileName;
             string fileName = Path.GetFileNameWithoutExtension(exe);
             string extension = Path.GetExtension(product.ImageFile.FileName);

@@ -38,7 +38,7 @@ public partial class Product
 
     [NotMapped]
     [DisplayName("Upload File")]
-    public IFormFile ImageFile { get; set; }
+    public IFormFile? ImageFile { get; set; } = null!;
 
     [Display(Name = "Người đăng")]
     public virtual User? UserPostNavigation { get; set; } = null!;
