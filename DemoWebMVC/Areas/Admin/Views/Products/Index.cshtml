@@ -102,9 +102,8 @@
                             @Html.DisplayFor(modelItem => item.UserPostNavigation.FullName)
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+                            <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-outline-danger">Sửa</a>
+                            <a href="#" title="Xoá" class="delete-link btn btn-danger" data-id="@item.ProductId" data-confirm="Bạn có thật sự muốn xoá?" data-toggle="modal" data-target="#confirmModal"><i class="fa fa-times"></i> Xoá</a>
                         </td>
                     </tr>
                     dem = dem + 1;

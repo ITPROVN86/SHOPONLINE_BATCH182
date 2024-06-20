@@ -79,7 +79,7 @@ namespace DemoWebMVC.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(await categoryRepository.GetAllCategory(), "RoleId", "RoleName", product.CategoryId);
+            ViewData["CategoryId"] = new SelectList(await categoryRepository.GetAllCategory(), "CategoryId", "CategoryName", product.CategoryId);
             ViewData["UserPost"] = new SelectList(await userRepository.GetAllUser(), "UserId", "FullName", product.UserPost);
             return View(product);
         }
@@ -97,7 +97,7 @@ namespace DemoWebMVC.Areas.Admin.Controllers
                 SetAlert(ShopCommon.Contants.UPDATE_SUCCESS, ShopCommon.Contants.SUCCESS);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(await categoryRepository.GetAllCategory(), "RoleId", "RoleName", product.CategoryId);
+            ViewData["CategoryId"] = new SelectList(await categoryRepository.GetAllCategory(), "CategoryId", "CategoryName", product.CategoryId);
             ViewData["UserPost"] = new SelectList(await userRepository.GetAllUser(), "UserId", "FullName", product.UserPost);
             return View(product);
         }

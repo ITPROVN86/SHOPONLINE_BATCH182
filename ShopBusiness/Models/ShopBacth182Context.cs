@@ -103,8 +103,6 @@ public partial class ShopBacth182Context : DbContext
                 .HasConstraintName("FK_User_Role");
         });
 
-        OnModelCreatingPartial(modelBuilder);
     }
 
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

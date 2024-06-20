@@ -16,7 +16,8 @@ namespace ShopDataAccess
         /// <returns></returns>
         public async Task<IEnumerable<Product>> GetProductAll()
         {
-            return await _context.Products.Include(u=>u.UserPostNavigation).Include(c=>c.Category).ToListAsync();
+            var products = _context.Products.Include(u => u.UserPostNavigation).Include(c => c.Category);
+            return await products.ToListAsync();
         }
 
         /// <summary>
