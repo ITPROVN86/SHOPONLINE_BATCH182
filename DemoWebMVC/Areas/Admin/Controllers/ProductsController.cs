@@ -104,11 +104,11 @@ namespace DemoWebMVC.Areas.Admin.Controllers
                     string uniqueFileName = UploadedFile(product);
                     product.ImageUrl = uniqueFileName;
                 }
-                else
+               /* else
                 {
                     var productFind = await productRepository.GetProductById(product.ProductId);
                     product.ImageUrl = productFind.ImageUrl;
-                }
+                }*/
                 await productRepository.Update(product);
                 SetAlert(ShopCommon.Contants.UPDATE_SUCCESS, ShopCommon.Contants.SUCCESS);
                 return RedirectToAction(nameof(Index));

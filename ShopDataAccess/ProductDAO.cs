@@ -42,6 +42,10 @@ namespace ShopDataAccess
             var existingItem = await GetProductById(product.ProductId);
             if (existingItem != null)
             {
+                if (product.ImageUrl == null)
+                {
+                    product.ImageUrl = existingItem.ImageUrl;
+                }
                 // Cập nhật các thuộc tính cần thiết
                 _context.Entry(existingItem).CurrentValues.SetValues(product); 
                 await _context.SaveChangesAsync();
