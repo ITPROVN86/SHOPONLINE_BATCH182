@@ -17,7 +17,7 @@
                 </p>
             }
         }
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ProductId" />
             <div class="mb-3">
@@ -41,9 +41,10 @@
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" class="form-control" type="file" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                <img id="preview" src="@Url.Content(Model.ImageUrl==null?"~/Admin/img/avatars/1.png":"~/Upload/images/"+Model.ImageUrl)" class="rounded-circle" height="40" width="40" />
             </div>
             <div class="mb-3">
                 <label asp-for="Price" class="control-label"></label>
@@ -83,5 +84,11 @@
             $('#alertBox').removeClass('hide');
             $('#alertBox').delay(3000).slideUp(500);
         })
+        ImageFile.onchange = evt => {
+            const [file] = ImageFile.files
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+            }
+        }
     </script>
 }

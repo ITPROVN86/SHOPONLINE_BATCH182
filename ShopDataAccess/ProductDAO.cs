@@ -39,7 +39,7 @@ namespace ShopDataAccess
         }
         public async Task Update(Product product)
         {
-            var existingItem = await GetProductById(product.CategoryId);
+            var existingItem = await GetProductById(product.ProductId);
             if (existingItem != null)
             {
                 // Cập nhật các thuộc tính cần thiết

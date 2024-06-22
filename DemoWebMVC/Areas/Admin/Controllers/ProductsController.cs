@@ -95,10 +95,20 @@ namespace DemoWebMVC.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,Description,Ncontent,CategoryId,ImageUrl,Price,CreatePost,UserPost,Status")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,Description,Ncontent,CategoryId,ImageUrl, ImageFile, Price,CreatePost,UserPost,Status")] Product product)
         {
             if (ModelState.IsValid)
             {
+                if (product.ImageFile != null)
+                {
+                    string uniqueFileName = UploadedFile(product);
+                    product.ImageUrl = uniqueFileName;
+                }
+                else
+                {
+                    var productFind = await productRepository.GetProductById(product.ProductId);
+                    product.ImageUrl = productFind.ImageUrl;
+                }
                 await productRepository.Update(product);
                 SetAlert(ShopCommon.Contants.UPDATE_SUCCESS, ShopCommon.Contants.SUCCESS);
                 return RedirectToAction(nameof(Index));
