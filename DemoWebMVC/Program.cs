@@ -1,3 +1,5 @@
+using DemoWebMVC.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using ShopBusiness.Models;
@@ -10,10 +12,27 @@ namespace DemoWebMVC
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Add services to the container.
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                options.SlidingExpiration = true;
+                options.AccessDeniedPath = "/Forbidden/";
+                options.LoginPath = "/Admin/Login/Index";
+                options.ReturnUrlParameter = "returnUrl";
+            }).AddCookie("Admin", options =>
+            {
+                options.LoginPath = new PathString("/Admin/Login/Index");
+            });
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             builder.Services.AddScoped(typeof(ShopBacth182Context));
             builder.Services.AddScoped<CategoryDAO>();
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
             builder.Services.Configure<FormOptions>(options =>
             {

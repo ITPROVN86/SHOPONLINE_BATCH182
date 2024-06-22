@@ -1,12 +1,14 @@
 ﻿using DemoWebMVC.Areas.Admin.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using ShopBusiness.Models;
 using ShopRepository;
+using System.Security.Claims;
 
 namespace DemoWebMVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class LoginController : Controller
+    public class LoginController : BaseController
     {
         public IUserRepository userRepository = null;
         public LoginController() {
@@ -27,6 +29,23 @@ namespace DemoWebMVC.Areas.Admin.Controllers
                 var user = await userRepository.GetUserByUserNamePassword(userName, password);
                 if (user!=null)
                 {
+                    // A claim is a statement about a subject by an issuer and
+                    //represent attributes of the subject that are useful in the context of authentication and authorization operations.
+                    var claims = new List<Claim>() {
+                        new Claim(ClaimTypes.Name, userName),
+                         new Claim("FullName", user.UserName),
+                        new Claim(ClaimTypes.Role, "Admin"),
+                    };
+                    //Initialize a new instance of the ClaimsIdentity with the claims and authentication scheme    
+                    var identity = new ClaimsIdentity(claims, "Admin");
+                    //Initialize a new instance of the ClaimsPrincipal with ClaimsIdentity    
+                    var principal = new ClaimsPrincipal(identity);
+                    //SignInAsync is a Extension method for Sign in a principal for the specified scheme.    
+                    HttpContext.SignInAsync("Admin", principal, new AuthenticationProperties()
+                    {
+                        IsPersistent = true
+                    });
+
                     return RedirectToAction("Index","Home");
                 }
                 else
@@ -38,6 +57,16 @@ namespace DemoWebMVC.Areas.Admin.Controllers
             return View(nameof(Index));
         }
 
+
+        public IActionResult Logout()
+        {
+            // Đăng xuất người dùng
+            HttpContext.SignOutAsync("Admin");
+            SetAlert("Đăng xuất thành công!", "success");
+            // Chuyển hướng đến trang đăng nhập hoặc trang chính
+            return RedirectToAction("Index", "Login", new { area = "Admin" }); 
+            // Thay thế bằng tên trang đăng nhập hoặc trang chính của bạn
+        }
 
     }
 }

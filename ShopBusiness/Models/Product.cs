@@ -23,6 +23,8 @@ public partial class Product
     [Display(Name = "Ảnh")]
     public string? ImageUrl { get; set; }
     [Display(Name = "Giá cả")]
+    [DisplayFormat(DataFormatString = "{0:N0}đ")]
+
     public decimal Price { get; set; }
 
     [Display(Name = "Ngày đăng")]

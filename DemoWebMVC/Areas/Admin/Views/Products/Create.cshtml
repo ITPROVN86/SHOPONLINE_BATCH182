@@ -32,8 +32,9 @@
             </div>
             <div class="mb-3">
                 <label asp-for="Ncontent" class="control-label"></label>
-                <textarea asp-for="Ncontent" class="form-control"></textarea>
-                <span asp-validation-for="Ncontent" class="text-danger"></span>
+                <div id="editor"></div>
+               @*  <textarea asp-for="Ncontent" class="form-control"></textarea>
+                <span asp-validation-for="Ncontent" class="text-danger"></span> *@
             </div>
             <div class="mb-3">
                 <label asp-for="CategoryId" class="control-label"></label>
@@ -77,6 +78,49 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script src="
+https://cdn.jsdelivr.net/npm/ckeditor5-classic-free-full-feature@35.4.1/build/ckeditor.min.js
+    "></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+                plugins: ['Essentials',
+                    'Paragraph',
+                    'Heading',
+                    'Bold',
+                    'Italic',
+                    'Underline',
+                    'Strikethrough',
+                    'SourceEditing',
+                    'Subscript',
+                    'Superscript',
+                    'Alignment',
+                    'Indent',
+                    'IndentBlock',
+                    'BlockQuote',
+                    'Link',
+                    'Image',
+                    'ImageCaption',
+                    'ImageStyle',
+                    'ImageToolbar',
+                    'ImageUpload',
+                    'List',
+                    'MediaEmbed',
+                    'PasteFromOffice',
+                    'Table',
+                    'TableToolbar',
+                    'TableProperties',
+                    'TableCellProperties',
+                    'Highlight',
+                    'FontFamily',
+                    'FontSize',
+                    'FontColor',
+                    'FontBackgroundColor', 'GeneralHtmlSupport', /* ... */]
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
     <script type="text/javascript">
         $(function () {
             $('#alertBox').removeClass('hide');

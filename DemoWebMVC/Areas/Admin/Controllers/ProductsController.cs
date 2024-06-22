@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,18 +17,22 @@ using X.PagedList;
 namespace DemoWebMVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public class ProductsController : BaseController
     {
         private readonly IProductRepository productRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IUserRepository userRepository;
         private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly IMapper mapper;
 
-        public ProductsController(IWebHostEnvironment webHostEnvironment)
+        public ProductsController(IWebHostEnvironment webHostEnvironment, IMapper mapper)
         {
             productRepository = new ProductRepository();
             categoryRepository = new CategoryRepository();
             userRepository = new UserRepository();
+            mapper = mapper;
             this.webHostEnvironment = webHostEnvironment;
         }
 
