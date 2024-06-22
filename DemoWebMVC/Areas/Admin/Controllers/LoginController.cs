@@ -11,11 +11,15 @@ namespace DemoWebMVC.Areas.Admin.Controllers
     public class LoginController : BaseController
     {
         public IUserRepository userRepository = null;
-        public LoginController() {
-            userRepository = new UserRepository();
-        }
-        public async Task<IActionResult> Index()
+        private readonly IRoleRepository roleRepository = null;
+        public LoginController()
         {
+            userRepository = new UserRepository();
+            roleRepository = new RoleRepository();
+        }
+        public async Task<IActionResult> Index(string ReturnUrl = null)
+        {
+            TempData["ReturnUrl"] = ReturnUrl;
             return View();
         }
 
@@ -27,13 +31,15 @@ namespace DemoWebMVC.Areas.Admin.Controllers
                 var userName = userLogin.UserName;
                 var password = ShopCommon.Library.EncryptMD5(userLogin.Password);
                 var user = await userRepository.GetUserByUserNamePassword(userName, password);
-                if (user!=null)
+                var role = await roleRepository.GetRoleById(user.RoleId);
+                ViewData["Role"] = role.RoleName;
+                if (user != null)
                 {
                     // A claim is a statement about a subject by an issuer and
                     //represent attributes of the subject that are useful in the context of authentication and authorization operations.
                     var claims = new List<Claim>() {
                         new Claim(ClaimTypes.Name, userName),
-                         new Claim("FullName", user.UserName),
+                         new Claim("FullName", user.FullName),
                         new Claim(ClaimTypes.Role, "Admin"),
                     };
                     //Initialize a new instance of the ClaimsIdentity with the claims and authentication scheme    
@@ -45,8 +51,17 @@ namespace DemoWebMVC.Areas.Admin.Controllers
                     {
                         IsPersistent = true
                     });
-
-                    return RedirectToAction("Index","Home");
+                    var routeValues = new RouteValueDictionary
+                {
+                    {"area","Admin" },
+                    {"returnURL",Request.Query["ReturnUrl"] },
+                    {"claimValue","true" }
+                };
+                    if (TempData["ReturnUrl"] != null)
+                    {
+                        return Redirect(TempData["ReturnUrl"].ToString());
+                    }
+                    return RedirectToAction("Index", "Home", routeValues);
                 }
                 else
                 {
@@ -64,7 +79,7 @@ namespace DemoWebMVC.Areas.Admin.Controllers
             HttpContext.SignOutAsync("Admin");
             SetAlert("Đăng xuất thành công!", "success");
             // Chuyển hướng đến trang đăng nhập hoặc trang chính
-            return RedirectToAction("Index", "Login", new { area = "Admin" }); 
+            return RedirectToAction("Index", "Login", new { area = "Admin" });
             // Thay thế bằng tên trang đăng nhập hoặc trang chính của bạn
         }
 
