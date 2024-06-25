@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 
 namespace ShopBusiness.Models;
 
@@ -28,7 +29,8 @@ public partial class Product
     public decimal Price { get; set; }
 
     [Display(Name = "Ngày đăng")]
-    public DateTime CreatePost { get; set; }
+    public DateTime CreatePost { get; set; } = DateTime.Now; // Assigning a default value (current time).
+
 
     public int UserPost { get; set; }
 

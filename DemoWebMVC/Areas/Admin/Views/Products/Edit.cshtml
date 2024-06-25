@@ -8,7 +8,7 @@
     Cập nhật Sản phẩm
 </h4>
 <div class="row mt-5">
-    <div class="col-md-6">
+    <div class="col-md-12">
         @{
             if (TempData["AlertMessage"] != null)
             {
@@ -32,6 +32,7 @@
             </div>
             <div class="mb-3">
                 <label asp-for="Ncontent" class="control-label"></label>
+                <input type="hidden" asp-for="Ncontent" id="hiddenNcontent">
                 <div id="editor"></div>
                @*  <textarea asp-for="Ncontent" class="form-control" ></textarea>
                 <span asp-validation-for="Ncontent" class="text-danger"></span> *@
@@ -75,31 +76,40 @@
     </div>
 </div>
 
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        DateTime currentDate = DateTime.Now;
     }
     <script src="
 https://cdn.jsdelivr.net/npm/ckeditor5-classic-free-full-feature@35.4.1/build/ckeditor.min.js
         "></script>
+    <script src="~/admin/controllers/ProductsController.js?@currentDate"></script>
     <script>
+        ImageFile.onchange = evt => {
+            const [file] = ImageFile.files
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+            }
+        }
         ClassicEditor
             .create(document.querySelector('#editor'), {
-                plugins: ['Essentials',
+                extraPlugins: [CustomUploadAdapterPlugin],
+
+                toolbar: ['Essentials',
                     'Paragraph',
-                    'Heading',
+                    'Heading', '|',
                     'Bold',
                     'Italic',
                     'Underline',
-                    'Strikethrough',
+                    'Strikethrough', '|',
                     'SourceEditing',
                     'Subscript',
                     'Superscript',
                     'Alignment',
                     'Indent',
                     'IndentBlock',
-                    'BlockQuote',
+                    'BlockQuote', '|',
                     'Link',
                     'Image',
                     'ImageCaption',
@@ -107,31 +117,86 @@ https://cdn.jsdelivr.net/npm/ckeditor5-classic-free-full-feature@35.4.1/build/ck
                     'ImageToolbar',
                     'ImageUpload',
                     'List',
-                    'MediaEmbed',
+                    'MediaEmbed', '|',
                     'PasteFromOffice',
-                    'Table',
-                    'TableToolbar',
-                    'TableProperties',
-                    'TableCellProperties',
+                    'insertTable',
                     'Highlight',
                     'FontFamily',
                     'FontSize',
                     'FontColor',
                     'FontBackgroundColor', 'GeneralHtmlSupport', /* ... */]
+                ,
+                image: {
+                    // Cấu hình các kiểu hình ảnh
+                    styles: [
+                        'full',
+                        'side'
+                    ],
+                    toolbar: [
+                        'imageStyle:full',
+                        'imageStyle:side',
+                        '|',
+                        'imageTextAlternative'
+                    ]
+                },
+                // Cấu hình để tải hình ảnh lên server của bạn
+                imageUpload: {
+                    uploadUrl: '/api/image/upload',
+                    headers: {
+                        'X-CSRF-TOKEN': 'CSRF-Token', // If CSRF token is needed
+                    }
+                }
+            })
+            .then(editor => {
+                const initialData = document.querySelector('#hiddenNcontent').value;
+                editor.setData(initialData);
+                editor.model.document.on('change:data', () => {
+                    document.querySelector('#hiddenNcontent').value = editor.getData();
+                });
             })
             .catch(error => {
                 console.error(error);
             });
-    </script>
-    <script>
-        $(function () {
-            $('#alertBox').removeClass('hide');
-            $('#alertBox').delay(3000).slideUp(500);
-        })
-        ImageFile.onchange = evt => {
-            const [file] = ImageFile.files
-            if (file) {
-                preview.src = URL.createObjectURL(file);
+
+
+        function CustomUploadAdapterPlugin(editor) {
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                return new CustomUploadAdapter(loader);
+            };
+        }
+        class CustomUploadAdapter {
+            constructor(loader) {
+                this.loader = loader;
+            }
+
+            upload() {
+                return this.loader.file
+                    .then(file => new Promise((resolve, reject) => {
+                        const data = new FormData();
+                        data.append('upload', file);
+
+                        fetch('/Admin/Products/UploadImage', {
+                            method: 'POST',
+                            body: data,
+                        })
+                            .then(response => response.json())
+                            .then(result => {
+                                if (result.uploaded) {
+                                    resolve({
+                                        default: result.url // Adjust depending on the API response
+                                    });
+                                } else {
+                                    reject(result.error.message);
+                                }
+                            })
+                            .catch(error => {
+                                reject('Upload failed');
+                            });
+                    }));
+            }
+
+            abort() {
+                // Handle aborting the upload process
             }
         }
     </script>

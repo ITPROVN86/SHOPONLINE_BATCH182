@@ -1,4 +1,4 @@
-/*
+﻿/*
 * demo.css
 * File include item demo only specific css only
 ******************************************************************************/
@@ -121,4 +121,9 @@
 .layout-demo-info {
   text-align: center;
   margin-top: 1rem;
+}
+.ck-editor__main .ck-content {
+    min-height: 500px;
+    max-height: 500px; /* Đặt chiều cao tối đa tùy vào nhu cầu */
+    overflow: auto;
 }

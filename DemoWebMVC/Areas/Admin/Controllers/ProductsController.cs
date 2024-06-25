@@ -37,16 +37,16 @@ namespace DemoWebMVC.Areas.Admin.Controllers
         }
 
         // GET: Admin/Products
-        public async Task<IActionResult> Index(string searchString, int? page, int categoyId)
+        public async Task<IActionResult> Index(string searchString, int? page, int categoryId)
         {
             var product = await productRepository.GetAllProduct();
             if (!string.IsNullOrEmpty(searchString))
             {
                 product = product.Where(c => ShopCommon.Library.ConvertToUnSign(c.ProductName.ToLower()).Contains(ShopCommon.Library.ConvertToUnSign(searchString.ToLower())));
             }
-            if (categoyId != 0)
+            if (categoryId != 0)
             {
-                product = product.Where(u => u.CategoryId == categoyId);
+                product = product.Where(u => u.CategoryId == categoryId);
             }
             ViewData["CategoryId"] = new SelectList(await categoryRepository.GetAllCategory(), "CategoryId", "CategoryName");
             ViewBag.Page = 5;
@@ -56,9 +56,13 @@ namespace DemoWebMVC.Areas.Admin.Controllers
         // GET: Admin/Products/Create
         public async Task<IActionResult> Create()
         {
+            var model = new Product
+            {
+                CreatePost = ShopCommon.Library.GetServerDateTime()  // Đặt ngày mặc định ngay trước khi gửi đến view
+            };
             ViewData["CategoryId"] = new SelectList(await categoryRepository.GetAllCategory(), "CategoryId", "CategoryName");
             ViewData["UserPost"] = new SelectList(await userRepository.GetAllUser(), "UserId", "FullName");
-            return View();
+            return View(model);
         }
 
         // POST: Admin/Products/Create
@@ -73,8 +77,11 @@ namespace DemoWebMVC.Areas.Admin.Controllers
             ViewData["UserPost"] = new SelectList(await userRepository.GetAllUser(), "UserId", "FullName");
             if (ModelState.IsValid)
             {
-                string uniqueFileName = UploadedFile(product);
-                product.ImageUrl = uniqueFileName;
+                if (product.ImageFile != null)
+                {
+                    string uniqueFileName = UploadedFile(product);
+                    product.ImageUrl = uniqueFileName;
+                }
                 await productRepository.Add(product);
                 SetAlert(ShopCommon.Contants.UPDATE_SUCCESS, ShopCommon.Contants.SUCCESS);
                 return RedirectToAction(nameof(Index));
@@ -110,11 +117,11 @@ namespace DemoWebMVC.Areas.Admin.Controllers
                     string uniqueFileName = UploadedFile(product);
                     product.ImageUrl = uniqueFileName;
                 }
-               /* else
-                {
-                    var productFind = await productRepository.GetProductById(product.ProductId);
-                    product.ImageUrl = productFind.ImageUrl;
-                }*/
+                /* else
+                 {
+                     var productFind = await productRepository.GetProductById(product.ProductId);
+                     product.ImageUrl = productFind.ImageUrl;
+                 }*/
                 await productRepository.Update(product);
                 SetAlert(ShopCommon.Contants.UPDATE_SUCCESS, ShopCommon.Contants.SUCCESS);
                 return RedirectToAction(nameof(Index));
@@ -174,6 +181,39 @@ namespace DemoWebMVC.Areas.Admin.Controllers
             ViewBag.Anh = product.ImageUrl;
             return fileName;
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile upload)
+        {
+            if (upload != null && upload.Length > 0)
+            {
+                // Get the current date and format it
+                var currentDate = DateTime.Now;
+                var year = currentDate.Year.ToString();
+                var month = currentDate.Month.ToString().PadLeft(2, '0');
+                var day = currentDate.Day.ToString().PadLeft(2, '0');
+
+                // Create the directory string and ensure the directory exists
+                var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/upload/images", year, month);
+                Directory.CreateDirectory(directoryPath); // Creates all directories on the path if not exist
+
+                // Modify the filename to include the date
+                var fileName = $"{year}{month}{day}_{Path.GetFileName(upload.FileName)}";
+                var filePath = Path.Combine(directoryPath, fileName);
+
+                // Save the file
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await upload.CopyToAsync(stream);
+                }
+
+                // Return the JSON result with the URL to the uploaded file
+                return Json(new { uploaded = true, url = $"/upload/images/{year}/{month}/{fileName}" });
+            }
+
+            return Json(new { uploaded = false, message = "Upload failed" });
+        }
+
 
     }
 }

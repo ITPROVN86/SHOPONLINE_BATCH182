@@ -31,8 +31,7 @@ namespace DemoWebMVC.Areas.Admin.Controllers
                 var userName = userLogin.UserName;
                 var password = ShopCommon.Library.EncryptMD5(userLogin.Password);
                 var user = await userRepository.GetUserByUserNamePassword(userName, password);
-                var role = await roleRepository.GetRoleById(user.RoleId);
-                ViewData["Role"] = role.RoleName;
+                //var role = await roleRepository.GetRoleById(user.RoleId);
                 if (user != null)
                 {
                     // A claim is a statement about a subject by an issuer and
