@@ -1,5 +1,6 @@
 
 using BusinessObjects;
+using ProductManagementWebClient.Models;
 
 namespace ProductManagementAPI
 {
@@ -10,7 +11,7 @@ namespace ProductManagementAPI
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddScoped(typeof(MyDbContext));
             // Add services to the container.
-
+            builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

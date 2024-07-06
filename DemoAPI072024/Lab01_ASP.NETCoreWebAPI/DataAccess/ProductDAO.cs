@@ -14,7 +14,7 @@ namespace DataAccess
         public static IEnumerable<Product> GetProducts()
         {
             var context = new MyDbContext();
-            var products = context.Products;
+            var products = context.Products.Include(c => c.Category);
             return products.ToList();
         }
 

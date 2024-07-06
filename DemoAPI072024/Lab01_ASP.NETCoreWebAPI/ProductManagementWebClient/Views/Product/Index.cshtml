@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BusinessObjects.Product>
+﻿@model IEnumerable<BusinessObjects.DTO.ProductDTO>
 
 @{
     ViewData["Title"] = "Index";
@@ -46,7 +46,7 @@
                 @Html.DisplayFor(modelItem => item.UnitInStock)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CategoryId)
+                @Html.DisplayFor(modelItem => item.CategoryName)
             </td>
             <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.ProductId }) |

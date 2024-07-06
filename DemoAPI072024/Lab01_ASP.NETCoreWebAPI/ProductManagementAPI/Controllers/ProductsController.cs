@@ -1,4 +1,6 @@
-﻿using BusinessObjects;
+﻿using AutoMapper;
+using BusinessObjects;
+using BusinessObjects.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Repositories;
 
@@ -11,15 +13,19 @@ namespace ProductManagementAPI.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _repository;
-        public ProductsController()
+        private readonly IMapper _mapper;
+        public ProductsController(IMapper mapper)
         {
             _repository = new ProductRepository();
+            _mapper = mapper;
         }
         // GET: api/<ProductsController>
         [HttpGet]
-        public IEnumerable<Product> GetProducts()
+        public ActionResult<IEnumerable<Product>> GetProducts()
         {
-            return _repository.GetProducts();
+            var products = _repository.GetProducts();
+            var productDTO = _mapper.Map<IEnumerable<ProductDTO>>(products);
+            return Ok(productDTO);
         }
         
         [HttpGet("{id}")]

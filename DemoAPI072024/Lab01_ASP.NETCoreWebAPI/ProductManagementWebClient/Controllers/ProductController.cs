@@ -1,4 +1,5 @@
 ﻿using BusinessObjects;
+using BusinessObjects.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -30,7 +31,7 @@ namespace ProductManagementWebClient.Controllers
             {
                 PropertyNameCaseInsensitive = true
             };
-            List<Product> list = JsonSerializer.Deserialize<List<Product>>(rData, option);
+            List<ProductDTO> list = JsonSerializer.Deserialize<List<ProductDTO>>(rData, option);
             return View(list);
         }
 
